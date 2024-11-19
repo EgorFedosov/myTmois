@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
-#include <set>
+#include <utility>
+#include <algorithm>
 using namespace std;
 
 int main()
 {
-    int n1, n2;
-    vector<pair<int, int>> graph1, graph2;
-    set<pair<int, int>> uniquePairs1, uniquePairs2; // Для проверки уникальности
+    int n1;
+    vector<pair<int, int>> graph1;
 
     cout << "Введите количество пар в первом графике: ";
     cin >> n1;
@@ -17,9 +17,19 @@ int main()
         int u, v;
         cin >> u >> v;
         pair<int, int> p = {u, v};
-        if (uniquePairs1.find(p) == uniquePairs1.end()) // find функция проверяет на повторы кортежей Если == то не найдены Если != то найдены
+
+        bool isUnique = true;
+        for (int j = 0; j < graph1.size(); ++j)
         {
-            uniquePairs1.insert(p); // добавляем в сет чтобы учитывать пару при следущей проверке
+            if (graph1[j] == p) // Проверка на уникальность
+            {
+                isUnique = false;
+                break;
+            }
+        }
+
+        if (isUnique)
+        {
             graph1.push_back(p);
         }
         else
@@ -29,6 +39,9 @@ int main()
         }
     }
 
+    int n2;
+    vector<pair<int, int>> graph2;
+
     cout << "Введите количество пар во втором графике: ";
     cin >> n2;
     cout << "Введите пары для второго графика (два числа через пробел):" << endl;
@@ -37,9 +50,19 @@ int main()
         int u, v;
         cin >> u >> v;
         pair<int, int> p = {u, v};
-        if (uniquePairs2.find(p) == uniquePairs2.end())
+
+        bool isUnique = true;
+        for (int j = 0; j < graph2.size(); ++j)
         {
-            uniquePairs2.insert(p);
+            if (graph2[j] == p) // Проверка на уникальность
+            {
+                isUnique = false;
+                break;
+            }
+        }
+
+        if (isUnique)
+        {
             graph2.push_back(p);
         }
         else
@@ -113,30 +136,96 @@ int main()
     }
     cout << endl;
 
-    // Проекция на ось X
-    set<int> projectionX1, projectionX2;
+    vector<int> projectionX1, projectionX2;
+
+    // Проекция на ось X для первого графика
     for (size_t i = 0; i < graph1.size(); i++)
     {
         int x = graph1[i].first;
-        projectionX1.insert(x);
+        bool exists = false;
+
+        // Проверка, если такой x уже есть в projectionX1
+        for (int px : projectionX1)
+        {
+            if (px == x)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            projectionX1.push_back(x);
+        }
     }
+
+    // Проекция на ось X для второго графика
     for (size_t i = 0; i < graph2.size(); i++)
     {
         int x = graph2[i].first;
-        projectionX2.insert(x);
+        bool exists = false;
+
+        // Проверка, если такой x уже есть в projectionX2
+        for (int px : projectionX2)
+        {
+            if (px == x)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            projectionX2.push_back(x);
+        }
     }
 
-    // Проекция на ось Y
-    set<int> projectionY1, projectionY2;
+    vector<int> projectionY1, projectionY2;
+
+    // Проекция на ось Y для первого графика
     for (size_t i = 0; i < graph1.size(); i++)
     {
         int y = graph1[i].second;
-        projectionY1.insert(y);
+        bool exists = false;
+
+        // Проверка, если такой y уже есть в projectionY1
+        for (int py : projectionY1)
+        {
+            if (py == y)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            projectionY1.push_back(y);
+        }
     }
+
+    // Проекция на ось Y для второго графика
     for (size_t i = 0; i < graph2.size(); i++)
     {
         int y = graph2[i].second;
-        projectionY2.insert(y);
+        bool exists = false;
+
+        // Проверка, если такой y уже есть в projectionY2
+        for (int py : projectionY2)
+        {
+            if (py == y)
+            {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists)
+        {
+            projectionY2.push_back(y);
+        }
     }
 
     cout << "Проекция первого графика на ось X: ";
@@ -165,7 +254,8 @@ int main()
     {
         cout << y << " ";
     }
-    cout << endl;
+    cout << endl
+         << endl;
 
     // декартово произведение
 
@@ -276,9 +366,5 @@ int main()
         }
     }
     cout << endl;
-
-    cout
-        << endl
-        << endl;
     return 0;
 }
